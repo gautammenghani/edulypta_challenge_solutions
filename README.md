@@ -1,1 +1,0 @@
-# edulypta_challenge_solutions

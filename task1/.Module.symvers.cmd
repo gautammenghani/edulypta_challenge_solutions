@@ -1,0 +1,1 @@
+cmd_/home/gautam/fun/edulypta/task1/Module.symvers := sed 's/\.ko$$/\.o/' /home/gautam/fun/edulypta/task1/modules.order | scripts/mod/modpost -m -a  -o /home/gautam/fun/edulypta/task1/Module.symvers -e -i Module.symvers   -T -
