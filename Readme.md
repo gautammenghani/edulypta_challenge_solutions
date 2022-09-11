@@ -13,3 +13,6 @@ the module be able to be unloaded as well.
 
 ### Task 4
 1. The tasks for this round all deal with the Linux kernel coding style. Attached to this message are two kernel modules that do not follow the proper Linux kernel coding style rules.  Please fix both of them up, and send it back to me in such a way that does follow the rules.
+
+### Task 5
+1. Take the kernel module you wrote for task 01, and modify it so that when a USB keyboard is plugged in, the module will be automatically loaded by the correct userspace hotplug tools (which are implemented by depmod / kmod / udev / mdev / systemd, depending on what distro you are using.)
