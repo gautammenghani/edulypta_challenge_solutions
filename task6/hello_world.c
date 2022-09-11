@@ -28,14 +28,10 @@ static ssize_t device_write(struct file *filp, const char __user *buff,
                             size_t len, loff_t *off)
 {
 	char buffer[10];
-	pr_warn("entered write\n");
 	if(copy_from_user(buffer, buff, len))
 		pr_warn("error in copy_from_user\n");
-	pr_warn("size of data received :%ld\n", strlen(buffer));
-	if (!strncmp(buffer, myid, strlen(buffer))) {
-		pr_warn("string are same: %s\n", buffer);
+	if (!strncmp(buffer, myid, strlen(buffer))) 
 		return 0;	
-	}
 	return -EINVAL;
 }
 
