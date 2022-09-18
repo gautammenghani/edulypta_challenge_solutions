@@ -69,8 +69,10 @@ struct file_operations foo_fops = {
 
 static int __init hello_init(void){
 	debug_dir = debugfs_create_dir("edulypta", NULL);
-	if (!debug_dir)
+	if (!debug_dir) {
 		pr_err("debugfs directory creation failed");
+		return -1;
+	}
 	debugfs_create_file("id", 0666, debug_dir, NULL, &id_fops);
 	debugfs_create_u32("jiffies", 0444, debug_dir, (u32*)&jiffies);
 	debugfs_create_file("foo", 0644, debug_dir, NULL, &foo_fops);
