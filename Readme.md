@@ -45,5 +45,12 @@ Use sysfs to implement the same features as task8
 Create a patch that fixes one coding style problem in any of the files in drivers/staging/
 
 ## Task 11
-
+- Write a patch against any driver that you are currently using on
+    your machine.  So first you have to figure out which drivers you are
+    using, and where the source code in the kernel tree is for that
+    driver.
+- In that driver, add a sysfs file to show up in the /sys/devices/
+  tree for the device that is called "id".  As you might expect, this
+  file follows the same rules as task 09 as for what you can read and
+  write to it.
 
