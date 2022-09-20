@@ -38,3 +38,12 @@ Take the kernel module you wrote for task 01, and modify it to be create a debug
   - When the module is unloaded, all of the debugfs files are cleaned
     up, and any memory allocated is freed.
 
+### Task 9
+Use sysfs to implement the same features as task8
+
+## Task 10
+Create a patch that fixes one coding style problem in any of the files in drivers/staging/
+
+## Task 11
+
+
