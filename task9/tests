@@ -1,0 +1,5 @@
+cat  /sys/kernel/eudyptula/id
+echo "test" >  /sys/kernel/eudyptula/id
+cat  /sys/kernel/eudyptula/jiffy
+echo "test" >  /sys/kernel/eudyptula/foo
+cat   /sys/kernel/eudyptula/foo

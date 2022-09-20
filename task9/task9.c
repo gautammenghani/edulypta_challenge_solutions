@@ -53,9 +53,9 @@ static ssize_t foo_show(struct kobject *kobj, struct kobj_attribute *attr,
 				char *buf)
 {
 	mutex_lock(&foo_lock);
-	strncpy(buf, foo_buffer, 4096);
+	strncpy(buf, foo_buffer, strlen(foo_buffer));
 	mutex_unlock(&foo_lock);
-	return 0;
+	return strlen(foo_buffer);
 }
 
 static ssize_t foo_store(struct kobject *kobj, struct kobj_attribute *attr,
@@ -68,7 +68,7 @@ static ssize_t foo_store(struct kobject *kobj, struct kobj_attribute *attr,
 	mutex_lock(&foo_lock);
 	strncpy(foo_buffer, buf, len);
 	mutex_unlock(&foo_lock);
-	return 0;	
+	return len;	
 }
 
 static struct kobj_attribute foo_attribute = __ATTR(foo, 0644, foo_show, foo_store);
