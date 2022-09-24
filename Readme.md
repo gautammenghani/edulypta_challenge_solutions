@@ -1,4 +1,4 @@
-## Edulypta challenge solutions
+## Eudyptula challenge solutions
 The Eudyptula Challenge was a series of programming exercises for the Linux kernel. They have been archived on github. This repo is my attempt at solving the challenges:
 ### Task 1
 Write a Linux kernel module, and stand-alone Makefile, that when loaded
@@ -100,3 +100,15 @@ task 04, that does the following:
         identity_destroy(10);
         identity_destroy(42);
         identity_destroy(3);
+
+## Task13
+This task is to take the code written in task 12, and cause all memory
+allocated from the 'struct identity' to come from a private slab cache
+just for the fun of it.
+
+Instead of using kmalloc() and kfree() in the module, use
+kmem\_cache\_alloc() and kmem\_cache\_free() instead.  Of course this means
+you will have to initialize your memory cache properly when the module
+starts up.  Don't forget to do that.  You are free to name your memory
+cache whatever you wish, but it should show up in the /proc/slabinfo
+file.
