@@ -54,3 +54,49 @@ Create a patch that fixes one coding style problem in any of the files in driver
   file follows the same rules as task 09 as for what you can read and
   write to it.
 
+## Task 12
+For this task, write a kernel module, based on your cleaned up one from
+task 04, that does the following:
+  - You have a structure that has 3 fields:
+        char  name[20];
+        int   id;
+        bool  busy;
+    name this structure "identity".
+  - Your module has a static variable that points to a list of these
+    "identity" structures.
+  - Write a function that looks like:
+        int identity_create(char *name, int id)
+    that creates the structure "identity", copies in the 'name' and 'id'
+    fields and sets 'busy' to false.  Proper error checking for out of
+    memory issues is required.  Return 0 if everything went ok; an error
+    value if something went wrong.
+  - Write a function that looks like:
+        struct identity *identity_find(int id);
+    that takes a given id, iterates over the list of all ids, and
+    returns the proper 'struct identity' associated with it.  If the
+    identity is not found, return NULL.
+  - Write a function that looks like:
+        void identity_destroy(int id);
+    that given an id, finds the proper 'struct identity' and removes it
+    from the system.
+  - Your module\_init() function will look much like the following:
+
+        struct identity *temp;
+
+        identity_create("Alice", 1);
+        identity_create("Bob", 2);
+        identity_create("Dave", 3);
+        identity_create("Gena", 10);
+
+        temp = identity_find(3);
+        pr_debug("id 3 = %s\n", temp->name);
+
+        temp = identity_find(42);
+        if (temp == NULL)
+                pr_debug("id 42 not found\n");
+
+        identity_destroy(2);
+        identity_destroy(1);
+        identity_destroy(10);
+        identity_destroy(42);
+        identity_destroy(3);
