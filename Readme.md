@@ -157,3 +157,12 @@ For this task:
     returns a return code signifying an invalid value was passed to it.
   - Write a userspace C program that calls the syscall and properly
     exercises it (valid and invalid calls need to be made).
+
+## Task 16
+Go install the tool 'sparse'.  It was started by Linus as a
+static-analysis tool that acts much like a compiler.  The kernel build
+system is set up to have it run if you ask it to, and it will report a
+bunch of issues in C code that are really specific to the kernel.
+
+When you build the kernel, pass the "C=1" option to the build, to have
+sparse run on the .c file before gcc is run.
