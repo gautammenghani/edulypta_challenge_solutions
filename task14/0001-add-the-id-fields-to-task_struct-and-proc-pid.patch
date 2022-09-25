@@ -1,0 +1,115 @@
+From 9469aeeeaf6cd4de25f7a383a2f297ecd8312696 Mon Sep 17 00:00:00 2001
+From: Gautam Menghani <gautammenghani201@gmail.com>
+Date: Sun, 25 Sep 2022 13:39:54 +0530
+Subject: [PATCH] add the id fields to task_struct and /proc/[pid]
+To: brauner@kernel.org
+Cc: akpm@linux-foundation.org,
+    adobriyan@gmail.com,
+    keescook@chromium.org,
+    haolee.swjtu@gmail.com,
+    ebiederm@xmission.com,
+    zhengqi.arch@bytedance.com,
+    chengzhihao1@huawei.com,
+    fweimer@redhat.com,
+    xu.xin16@zte.com.cn,
+    gautammenghani201@gmail.com,
+    stephen.s.brennan@oracle.com,
+    linux-kernel@vger.kernel.org,
+    linux-fsdevel@vger.kernel.org
+
+Add a new field, "id", to the task struct and also make it readable from
+/proc/<pid>/id. 
+
+---
+ fs/proc/base.c        | 10 ++++++++++
+ fs/proc/task_mmu.c    |  2 ++
+ include/linux/sched.h |  1 +
+ kernel/fork.c         |  5 ++---
+ 4 files changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index 93f7e3d971e4..b1f34c882259 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -468,6 +468,14 @@ static int proc_pid_stack(struct seq_file *m, struct pid_namespace *ns,
+ }
+ #endif
+ 
++static int proc_pid_id(struct seq_file *m, struct pid_namespace *ns,
++			  struct pid *pid, struct task_struct *task)
++{
++	seq_printf(m, "id: %ld\n", task->id);
++	task->id++;
++	return 0;
++}			  
++
+ #ifdef CONFIG_SCHED_INFO
+ /*
+  * Provides /proc/PID/schedstat
+@@ -3275,6 +3283,7 @@ static const struct pid_entry tgid_base_stuff[] = {
+ #ifdef CONFIG_STACKTRACE
+ 	ONE("stack",      S_IRUSR, proc_pid_stack),
+ #endif
++	ONE("id", S_IRUSR, proc_pid_id),
+ #ifdef CONFIG_SCHED_INFO
+ 	ONE("schedstat",  S_IRUGO, proc_pid_schedstat),
+ #endif
+@@ -3612,6 +3621,7 @@ static const struct pid_entry tid_base_stuff[] = {
+ 	REG("smaps",     S_IRUGO, proc_pid_smaps_operations),
+ 	REG("smaps_rollup", S_IRUGO, proc_pid_smaps_rollup_operations),
+ 	REG("pagemap",    S_IRUSR, proc_pagemap_operations),
++	//REG("id", S_IRUSR, proc_pid_id_operations),
+ #endif
+ #ifdef CONFIG_SECURITY
+ 	DIR("attr",      S_IRUGO|S_IXUGO, proc_attr_dir_inode_operations, proc_attr_dir_operations),
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index 4e0023643f8b..753f1ddc96e1 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -1042,6 +1042,8 @@ static int smaps_rollup_release(struct inode *inode, struct file *file)
+ 	return single_release(inode, file);
+ }
+ 
++
++
+ const struct file_operations proc_pid_smaps_operations = {
+ 	.open		= pid_smaps_open,
+ 	.read		= seq_read,
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index e7b2f8a5c711..cf800aad15ff 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -734,6 +734,7 @@ struct task_struct {
+ #endif
+ 	unsigned int			__state;
+ 
++        long id;
+ #ifdef CONFIG_PREEMPT_RT
+ 	/* saved state for "spinlock sleepers" */
+ 	unsigned int			saved_state;
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 90c85b17bf69..cd93b2c29012 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2693,7 +2693,7 @@ pid_t kernel_clone(struct kernel_clone_args *args)
+ 		init_completion(&vfork);
+ 		get_task_struct(p);
+ 	}
+-
++	p->id = 100;
+ 	wake_up_new_task(p);
+ 
+ 	/* forking complete and child started to run, tell ptracer */
+@@ -2703,8 +2703,7 @@ pid_t kernel_clone(struct kernel_clone_args *args)
+ 	if (clone_flags & CLONE_VFORK) {
+ 		if (!wait_for_vfork_done(p, &vfork))
+ 			ptrace_event_pid(PTRACE_EVENT_VFORK_DONE, pid);
+-	}
+-
++	}	
+ 	put_pid(pid);
+ 	return nr;
+ }
+-- 
+2.34.1
+
