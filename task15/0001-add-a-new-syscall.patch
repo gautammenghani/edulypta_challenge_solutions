@@ -1,0 +1,89 @@
+From f8e38b9c61478966dd56d9fd664c4e7359493640 Mon Sep 17 00:00:00 2001
+From: Gautam Menghani <gautammenghani201@gmail.com>
+Date: Sun, 25 Sep 2022 19:45:35 +0530
+Subject: [PATCH] add a new syscall
+To: luto@kernel.org,
+    tglx@linutronix.de,
+    mingo@redhat.com,
+    bp@alien8.de,
+    dave.hansen@linux.intel.com,
+    x86@kernel.org,
+    mic@digikod.net,
+    brauner@kernel.org
+Cc: hpa@zytor.com,
+    akpm@linux-foundation.org,
+    Zijlstra,
+    aneesh.kumar@linux.ibm.com,
+    andrealmeid@igalia.com,
+    gautammenghani201@gmail.com,
+    linux-kernel@vger.kernel.org,
+    linux-security-module@vger.kernel.org,
+    bpf@vger.kernel.org
+
+Add a new syscall "eudyptula" that takes 2 ints -  high_id and low_id
+and combines them to check if the number is the user's id.
+
+---
+ arch/x86/entry/syscalls/syscall_64.tbl | 1 +
+ include/linux/syscalls.h               | 2 ++
+ kernel/Makefile                        | 2 +-
+ kernel/eudyptula.c                     | 9 +++++++++
+ 4 files changed, 13 insertions(+), 1 deletion(-)
+ create mode 100644 kernel/eudyptula.c
+
+diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
+index c84d12608cd2..71f1f5aceacb 100644
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -372,6 +372,7 @@
+ 448	common	process_mrelease	sys_process_mrelease
+ 449	common	futex_waitv		sys_futex_waitv
+ 450	common	set_mempolicy_home_node	sys_set_mempolicy_home_node
++451	common	eudyptula		sys_eudyptula
+ 
+ #
+ # Due to a historical design error, certain syscalls are numbered differently
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index a34b0f9a9972..2add7526cfcf 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -1276,6 +1276,8 @@ asmlinkage long sys_old_mmap(struct mmap_arg_struct __user *arg);
+  */
+ asmlinkage long sys_ni_syscall(void);
+ 
++asmlinkage long sys_eudyptula(int high_id, int low_id);
++
+ #endif /* CONFIG_ARCH_HAS_SYSCALL_WRAPPER */
+ 
+ 
+diff --git a/kernel/Makefile b/kernel/Makefile
+index 318789c728d3..769f87e8a8ef 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -10,7 +10,7 @@ obj-y     = fork.o exec_domain.o panic.o \
+ 	    extable.o params.o \
+ 	    kthread.o sys_ni.o nsproxy.o \
+ 	    notifier.o ksysfs.o cred.o reboot.o \
+-	    async.o range.o smpboot.o ucount.o regset.o
++	    async.o range.o smpboot.o ucount.o regset.o eudyptula.o
+ 
+ obj-$(CONFIG_USERMODE_DRIVER) += usermode_driver.o
+ obj-$(CONFIG_MODULES) += kmod.o
+diff --git a/kernel/eudyptula.c b/kernel/eudyptula.c
+new file mode 100644
+index 000000000000..6ee09e706bce
+--- /dev/null
++++ b/kernel/eudyptula.c
+@@ -0,0 +1,9 @@
++#include <linux/kernel.h>
++#include <linux/syscalls.h>
++
++SYSCALL_DEFINE2(eudyptula, unsigned int, high_id, unsigned int, low_id)
++{
++	if ((((u64)high_id << 16) | low_id) == 0xdeadbeef) 
++		return 0;
++	return -EINVAL;
++}
+-- 
+2.34.1
+
