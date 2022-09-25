@@ -166,3 +166,20 @@ bunch of issues in C code that are really specific to the kernel.
 
 When you build the kernel, pass the "C=1" option to the build, to have
 sparse run on the .c file before gcc is run.
+
+## Task 17
+Go dig up your code from task 06, the misc char device driver, and make
+the following changes:
+
+ - Delete the read function.  You don't need that anymore, so make it a
+   write-only misc device and be sure to set the mode of the device to
+   be write-only, by anyone.  If you do this right, udev will set up the
+   node automatically with the correct permissions.
+ - Create a wait queue, name it "wee\_wait".
+ - In your module init function, create a kernel thread, named of course
+   "eudyptula".
+ - The thread's main function should not do anything at this point in
+   time, except make sure to shutdown if asked to, and wait on the
+   "wee\_wait" waitqueue.
+ - In your module exit function, shut down the kernel thread you started
+   up.
