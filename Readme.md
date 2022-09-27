@@ -183,3 +183,32 @@ the following changes:
    "wee\_wait" waitqueue.
  - In your module exit function, shut down the kernel thread you started
    up.
+
+## Task 18
+Go back and dig up task 12's source code, the one with the list
+handling.  Copy the structure into this module, and the
+identity\_create(), identity\_find(), and identity\_destroy() functions
+into this module as well.
+
+Write a new function, identity\_get(), that looks like:
+  struct identity identity\_get(void);
+and returns the next "identity" structure that is on the list, and
+removes it from the list.  If nothing is on the list, return NULL.
+
+Then, hook up the misc char device "write" function to do the following:
+  - If a write is larger than 19 characters, truncate it at 19.
+  - Take the write data and pass it to identity\_create() as the string,
+    and use an incrementing counter as the "id" value.
+  - Wake up the "wee\_wait" queue.
+
+In the kernel thread function:
+  - If the "wee\_wait" queue wakes us up, get the next identity in the
+    system with a call to identity_get().
+  - Sleep (in an interruptable state, don't go increasing the system
+    load in a bad way) for 5 seconds.
+  - Write out the identity name, and id to the debug kernel log and then
+    free the memory.
+
+When the module exits, clean up the whole list by using the functions
+given, no fair mucking around with the list variables directly.
+
