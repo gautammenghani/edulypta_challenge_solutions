@@ -1,0 +1,6 @@
+# Terminal 1
+sudo nc -lvnp 4444
+
+# Terminal 2
+sudo nc 127.0.0.1 4444
+  > myTestId

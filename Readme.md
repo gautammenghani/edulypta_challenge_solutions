@@ -212,3 +212,10 @@ In the kernel thread function:
 When the module exits, clean up the whole list by using the functions
 given, no fair mucking around with the list variables directly.
 
+## Task 19
+For this task, write a netfilter kernel module that does the following:
+  - monitors all IPv4 network traffic that is coming into the machine
+  - prints the id to the kernel debug log if the network traffic stream
+    contains your id.
+  - properly unregisters you from the netfilter core when the module
+    unloads.
