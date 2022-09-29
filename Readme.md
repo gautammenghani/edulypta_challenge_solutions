@@ -41,10 +41,10 @@ Take the kernel module you wrote for task 01, and modify it to be create a debug
 ### Task 9
 Use sysfs to implement the same features as task8
 
-## Task 10
+### Task 10
 Create a patch that fixes one coding style problem in any of the files in drivers/staging/
 
-## Task 11
+### Task 11
 - Write a patch against any driver that you are currently using on
     your machine.  So first you have to figure out which drivers you are
     using, and where the source code in the kernel tree is for that
@@ -54,7 +54,7 @@ Create a patch that fixes one coding style problem in any of the files in driver
   file follows the same rules as task 09 as for what you can read and
   write to it.
 
-## Task 12
+### Task 12
 For this task, write a kernel module, based on your cleaned up one from
 task 04, that does the following:
   - You have a structure that has 3 fields:
@@ -101,7 +101,7 @@ task 04, that does the following:
         identity_destroy(42);
         identity_destroy(3);
 
-## Task13
+### Task13
 This task is to take the code written in task 12, and cause all memory
 allocated from the 'struct identity' to come from a private slab cache
 just for the fun of it.
@@ -113,7 +113,7 @@ starts up.  Don't forget to do that.  You are free to name your memory
 cache whatever you wish, but it should show up in the /proc/slabinfo
 file.
 
-## Task14
+### Task14
 Now that you have the basics of lists, and we glossed over the custom
 allocators (the first cut at that task was much harder, you got off
 easy), it's time to move on to something a bit more old-school: tasks.
@@ -131,7 +131,7 @@ For this task:
     from.
   - Provide some "proof" it all works properly.
 
-## Task 15
+### Task 15
 Speaking of "core kernel" tasks, let's do another one.  It's one of the
 most common undergraduate tasks there is: create a new syscall!
 Yeah, loads of fun, but it's good to know the basics of how to do this,
@@ -158,7 +158,7 @@ For this task:
   - Write a userspace C program that calls the syscall and properly
     exercises it (valid and invalid calls need to be made).
 
-## Task 16
+### Task 16
 Go install the tool 'sparse'.  It was started by Linus as a
 static-analysis tool that acts much like a compiler.  The kernel build
 system is set up to have it run if you ask it to, and it will report a
@@ -167,7 +167,7 @@ bunch of issues in C code that are really specific to the kernel.
 When you build the kernel, pass the "C=1" option to the build, to have
 sparse run on the .c file before gcc is run.
 
-## Task 17
+### Task 17
 Go dig up your code from task 06, the misc char device driver, and make
 the following changes:
 
@@ -184,7 +184,7 @@ the following changes:
  - In your module exit function, shut down the kernel thread you started
    up.
 
-## Task 18
+### Task 18
 Go back and dig up task 12's source code, the one with the list
 handling.  Copy the structure into this module, and the
 identity\_create(), identity\_find(), and identity\_destroy() functions
@@ -212,10 +212,16 @@ In the kernel thread function:
 When the module exits, clean up the whole list by using the functions
 given, no fair mucking around with the list variables directly.
 
-## Task 19
+### Task 19
 For this task, write a netfilter kernel module that does the following:
   - monitors all IPv4 network traffic that is coming into the machine
   - prints the id to the kernel debug log if the network traffic stream
     contains your id.
   - properly unregisters you from the netfilter core when the module
     unloads.
+
+### Task 20
+This task requires you to work on the fat filesystem code:
+  - Add an ioctl to modify the volume label of a mounted fat filesystem.
+    Be sure to handle both 16 and 32 bit fat filesystems {hint!}
+  - Provide a userspace .c program to test this new ioctl.
